@@ -50,88 +50,62 @@ namespace MyAppMacro
 		void BtnApplyClick(object sender, EventArgs e)
 		{
 			Level curLevel = m_levels.ElementAt(cbLevel.SelectedIndex);
-			//cbLevel.Text;
 			
-//			TaskDialog.Show("Current selected Level", curLevel.Name);
 			IEnumerable<Element> Allelem= JtElementExtensionMethods.SelectAllPhysicalElements(m_doc);
 			List<ElementId> eIds= new List<ElementId>();
-			Parameter a1,a2,a3, a4, a5, a6, a7;
+			Parameter p;
 			IEnumerator<Element> a = Allelem.GetEnumerator();
+			List<BuiltInParameter> bip1 = new List<BuiltInParameter>(){
+				BuiltInParameter.FAMILY_BASE_LEVEL_PARAM,
+				BuiltInParameter.INSTANCE_REFERENCE_LEVEL_PARAM,
+				BuiltInParameter.SCHEDULE_LEVEL_PARAM,
+				BuiltInParameter.WALL_BASE_CONSTRAINT,
+				BuiltInParameter.FAMILY_LEVEL_PARAM,
+				BuiltInParameter.STAIRS_BASE_LEVEL_PARAM
+			};
+			
+			List<BuiltInParameter> bip2 = new List<BuiltInParameter>(){
+				BuiltInParameter.STAIRS_RAILING_BASE_LEVEL_PARAM    //Should set host in bip3
+			};
+			List<BuiltInParameter> bip3 = new List<BuiltInParameter>(){
+				BuiltInParameter.STAIRS_BASE_LEVEL_PARAM  //Hosts for bip2
+			};
+			
 			while (a.MoveNext()) {
 				Element e1 = a.Current;
-				a1 = e1.get_Parameter(BuiltInParameter.FAMILY_BASE_LEVEL_PARAM);
-				a2 = e1.get_Parameter(BuiltInParameter.INSTANCE_REFERENCE_LEVEL_PARAM);
-				a3 = e1.get_Parameter(BuiltInParameter.LEVEL_PARAM);
-				a4 = e1.get_Parameter(BuiltInParameter.WALL_BASE_CONSTRAINT);
-				a5 = e1.get_Parameter(BuiltInParameter.FAMILY_LEVEL_PARAM);
-				a6 = e1.get_Parameter(BuiltInParameter.STAIRS_BASE_LEVEL_PARAM);
-				a7 = e1.get_Parameter(BuiltInParameter.STAIRS_RAILING_BASE_LEVEL_PARAM);
-			try
-			{
-
-				if (null != a1)
+				try
 				{
-					Level a1_Level = m_doc.GetElement(a1.AsElementId())  as Level;
-					if(a1_Level.Id != curLevel.Id)
-						//m_uidoc.ActiveView.HideElementTemporary(e1.Id);
-						eIds.Add(e1.Id);
+					foreach (BuiltInParameter bip in bip1) {
+						p = e1.get_Parameter(bip);
+						if (null != p)
+						{
+							Level p_Level = m_doc.GetElement(p.AsElementId())  as Level;
+							if(null != p_Level)
+							if(p_Level.Id != curLevel.Id)
+								eIds.Add(e1.Id);
+						}					
+					}
+					for(int i=0; i < bip2.Count;i++) {
+						p = e1.get_Parameter(bip2[i]);
+						if (null != p)
+						{
+							Railing e2 = e1 as Railing;
+							if(e2.HasHost)
+							{
+								Element e3 = m_doc.GetElement(e2.HostId);
+								p = e3.get_Parameter(bip3[i]);
+							}					
+							Level a7_Level = m_doc.GetElement(p.AsElementId())  as Level;
+							if(null != a7_Level)
+							if(a7_Level.Id != curLevel.Id)
+								eIds.Add(e1.Id);
+						}					
+					}		
 				}
-				if (null != a2)
+				catch (Exception ex)
 				{
-					Level a2_Level = m_doc.GetElement(a2.AsElementId())  as Level;
-					if(a2_Level.Id != curLevel.Id)
-						//m_uidoc.ActiveView.HideElementTemporary(e1.Id);
-						eIds.Add(e1.Id);
+				     TaskDialog.Show("Exception", ex.ToString());
 				}
-				if (null != a3)
-				{
-					Level a3_Level = m_doc.GetElement(a3.AsElementId())  as Level;
-					if(a3_Level.Id != curLevel.Id)
-						//m_uidoc.ActiveView.HideElementTemporary(e1.Id);
-						eIds.Add(e1.Id);
-				}
-				if (null != a4)
-				{
-					Level a4_Level = m_doc.GetElement(a4.AsElementId())  as Level;
-					if(a4_Level.Id != curLevel.Id)
-						//m_uidoc.ActiveView.HideElementTemporary(e1.Id);
-						eIds.Add(e1.Id);
-				}
-				if (null != a5)
-				{
-					Level a5_Level = m_doc.GetElement(a5.AsElementId())  as Level;
-					if(a5_Level.Id != curLevel.Id)
-						//m_uidoc.ActiveView.HideElementTemporary(e1.Id);
-						eIds.Add(e1.Id);
-				}
-				if (null != a6)
-				{
-					Level a6_Level = m_doc.GetElement(a6.AsElementId())  as Level;
-					if(a6_Level.Id != curLevel.Id)
-						//m_uidoc.ActiveView.HideElementTemporary(e1.Id);
-						eIds.Add(e1.Id);
-				}
-				if (null != a7)
-				{
-					Railing e2 = e1 as Railing;
-					if(e2.HasHost)
-					{
-					Element e3 = m_doc.GetElement(e2.HostId);
-					a7 = e3.get_Parameter(BuiltInParameter.STAIRS_BASE_LEVEL_PARAM);
-					}					
-					Level a7_Level = m_doc.GetElement(a7.AsElementId())  as Level;
-					if(a7_Level.Id != curLevel.Id)
-						//m_uidoc.ActiveView.HideElementTemporary(e1.Id);
-						eIds.Add(e1.Id);
-				}
-			
-//			try
-//			{
-			}
-			catch (Exception)
-			{
-			     //TaskDialog.Show("Exception", ex.ToString());
-			}
 			}
 			m_uidoc.ActiveView.HideElements(eIds);
 			m_uidoc.RefreshActiveView();
@@ -147,7 +121,7 @@ namespace MyAppMacro
 			if( e.Category == null ) return false;
 			if( e.ViewSpecific ) return false;
 			// exclude specific unwanted categories
-			if( ( (BuiltInCategory) e.Category.Id.IntegerValue ) == BuiltInCategory.OST_HVAC_Zones ) return false;
+			//if( ( (BuiltInCategory) e.Category.Id.IntegerValue ) == BuiltInCategory.OST_HVAC_Zones ) return false;
 			
 			return e.Category.CategoryType == CategoryType.Model && e.Category.CanAddSubcategory;
 		}

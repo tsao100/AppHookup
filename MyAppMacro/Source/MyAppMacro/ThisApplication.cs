@@ -205,7 +205,7 @@ namespace MyAppMacro
 			}
 		}
 		
-		public void LevelIsolation2()
+		public void ChangeObjRefLevel2()
 		{
             Document doc = doc=ActiveUIDocument.Document; 
             UIDocument uidoc=ActiveUIDocument;
@@ -213,7 +213,7 @@ namespace MyAppMacro
 			{
 				  t.Start();
 		            ChangeObjRefLevel corl = new ChangeObjRefLevel(doc, uidoc);
-		            corl.ShowDialog();
+		            corl.Show();
 			      t.Commit();
 			}
  			
