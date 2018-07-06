@@ -56,6 +56,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ChangeObjRefLevel.resx">
+      <DependentUpon>ChangeObjRefLevel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LevelIsolator.resx">
       <DependentUpon>LevelIsolator.cs</DependentUpon>
     </EmbeddedResource>

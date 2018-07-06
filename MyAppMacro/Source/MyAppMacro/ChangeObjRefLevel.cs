@@ -9,24 +9,44 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.DB.Structure;
+using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Selection;
 
 namespace MyAppMacro
 {
 	/// <summary>
 	/// Description of ChangeObjRefLevel.
 	/// </summary>
-	public partial class ChangeObjRefLevel : Form
+	public partial class ChangeObjRefLevel : System.Windows.Forms.Form
 	{
-		public ChangeObjRefLevel()
+		private Document m_doc;
+		private UIDocument m_uidoc;
+		private IList<Level> m_levels=null;
+		public ChangeObjRefLevel(Document doc, UIDocument uidoc)
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
 			InitializeComponent();
 			
-			//
-			// TODO: Add constructor code after the InitializeComponent() call.
-			//
+			m_doc = doc;
+			m_uidoc = uidoc;
+			cbTopLevel.Items.Add("None");
+			m_levels = new FilteredElementCollector(doc).OfClass(typeof(Level)).Cast<Level>().OrderBy(l => -l.Elevation).ToList();
+			foreach (Level level in m_levels) {
+				cbTopLevel.Items.Add(level.Name);
+				cbBtmLevel.Items.Add(level.Name);
+			}
+			
+			cbTopLevel.SelectedIndex=0;
+			cbBtmLevel.SelectedIndex=0;
 		}
 	}
 }

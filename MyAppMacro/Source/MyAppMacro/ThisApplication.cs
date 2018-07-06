@@ -203,7 +203,20 @@ namespace MyAppMacro
 		            li.ShowDialog();
 			      t.Commit();
 			}
-           
+		}
+		
+		public void LevelIsolation2()
+		{
+            Document doc = doc=ActiveUIDocument.Document; 
+            UIDocument uidoc=ActiveUIDocument;
+ 			using (Transaction t = new Transaction(doc, "Change Object Reference Level"))
+			{
+				  t.Start();
+		            ChangeObjRefLevel corl = new ChangeObjRefLevel(doc, uidoc);
+		            corl.ShowDialog();
+			      t.Commit();
+			}
+ 			
 
 		}
 		public void ChangeObjRefLevel()

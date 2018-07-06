@@ -5,3 +5,4 @@ C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\MyAppMacro\Source\MyAp
 C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\MyAppMacro\Source\MyAppMacro\obj\Debug\MyAppMacro.csprojResolveAssemblyReference.cache
 C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\MyAppMacro\Source\MyAppMacro\obj\Debug\MyAppMacro.LevelIsolator.resources
 C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\MyAppMacro\Source\MyAppMacro\obj\Debug\MyAppMacro.csproj.GenerateResource.Cache
+C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\MyAppMacro\Source\MyAppMacro\obj\Debug\MyAppMacro.ChangeObjRefLevel.resources

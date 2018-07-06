@@ -36,12 +36,38 @@ namespace MyAppMacro
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.cbBtmLevel = new System.Windows.Forms.ComboBox();
+			this.cbTopLevel = new System.Windows.Forms.ComboBox();
+			this.SuspendLayout();
+			// 
+			// cbBtmLevel
+			// 
+			this.cbBtmLevel.FormattingEnabled = true;
+			this.cbBtmLevel.Location = new System.Drawing.Point(12, 78);
+			this.cbBtmLevel.Name = "cbBtmLevel";
+			this.cbBtmLevel.Size = new System.Drawing.Size(151, 23);
+			this.cbBtmLevel.TabIndex = 0;
+			// 
+			// cbTopLevel
+			// 
+			this.cbTopLevel.FormattingEnabled = true;
+			this.cbTopLevel.Location = new System.Drawing.Point(12, 33);
+			this.cbTopLevel.Name = "cbTopLevel";
+			this.cbTopLevel.Size = new System.Drawing.Size(151, 23);
+			this.cbTopLevel.TabIndex = 0;
 			// 
 			// ChangeObjRefLevel
 			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Text = "ChangeObjRefLevel";
+			this.ClientSize = new System.Drawing.Size(282, 253);
+			this.Controls.Add(this.cbTopLevel);
+			this.Controls.Add(this.cbBtmLevel);
 			this.Name = "ChangeObjRefLevel";
+			this.Text = "ChangeObjRefLevel";
+			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.ComboBox cbTopLevel;
+		private System.Windows.Forms.ComboBox cbBtmLevel;
 	}
 }
