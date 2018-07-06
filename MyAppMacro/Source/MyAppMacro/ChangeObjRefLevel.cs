@@ -58,8 +58,8 @@ namespace MyAppMacro
 //			Parameter p;
 			
 			List<BuiltInParameter> bipBase = new List<BuiltInParameter>(){
-				BuiltInParameter.FAMILY_BASE_LEVEL_PARAM,
 				BuiltInParameter.INSTANCE_REFERENCE_LEVEL_PARAM,
+				BuiltInParameter.FAMILY_BASE_LEVEL_PARAM,
 				BuiltInParameter.SCHEDULE_LEVEL_PARAM,
 				BuiltInParameter.WALL_BASE_CONSTRAINT,
 				BuiltInParameter.FAMILY_LEVEL_PARAM,
@@ -77,9 +77,9 @@ namespace MyAppMacro
 				BuiltInParameter.INVALID
 			};
 
-			List<BuiltInParameter> bipBaseOffset = new List<BuiltInParameter>(){
-				BuiltInParameter.FAMILY_BASE_LEVEL_OFFSET_PARAM,
+			List<BuiltInParameter> bipBaseOffset1 = new List<BuiltInParameter>(){
 				BuiltInParameter.STRUCTURAL_BEAM_END0_ELEVATION,
+				BuiltInParameter.FAMILY_BASE_LEVEL_OFFSET_PARAM,
 				BuiltInParameter.FLOOR_HEIGHTABOVELEVEL_PARAM,
 				BuiltInParameter.WALL_BASE_OFFSET,
 				BuiltInParameter.INSTANCE_SILL_HEIGHT_PARAM,
@@ -87,9 +87,9 @@ namespace MyAppMacro
 				BuiltInParameter.STAIRS_RAILING_HEIGHT_OFFSET
 			};
 			
-			List<BuiltInParameter> bipTopOffset = new List<BuiltInParameter>(){
-				BuiltInParameter.FAMILY_TOP_LEVEL_OFFSET_PARAM,
+			List<BuiltInParameter> bipBaseOffset2 = new List<BuiltInParameter>(){
 				BuiltInParameter.STRUCTURAL_BEAM_END1_ELEVATION,
+				BuiltInParameter.FAMILY_TOP_LEVEL_OFFSET_PARAM,
 				BuiltInParameter.INVALID,
 				BuiltInParameter.WALL_TOP_OFFSET,
 				BuiltInParameter.FAMILY_LEVEL_PARAM,
@@ -97,6 +97,7 @@ namespace MyAppMacro
 				BuiltInParameter.INVALID
 			};
 			
+			int i=0;
 			foreach (ElementId eId in selection) {
 				Element e1 = m_doc.GetElement(eId);
 				switch ((int)e1.Category.Id.IntegerValue) {
@@ -104,6 +105,7 @@ namespace MyAppMacro
 						FamilyInstance fi = e1 as FamilyInstance;
 						switch (fi.StructuralType) {
 							case StructuralType.Beam:
+								i=0;
 								break;
 							default:
 								
@@ -111,37 +113,45 @@ namespace MyAppMacro
 						}
 						
 						break;
+					case (int)BuiltInCategory.OST_StructuralColumns:
+						i=1;
+						break;
 					case (int)BuiltInCategory.OST_Floors:
-						
+						i=2;
 						break;
 					case (int)BuiltInCategory.OST_Walls:
-						Parameter p = e1.get_Parameter(BuiltInParameter.WALL_BASE_CONSTRAINT);
-						Parameter q = e1.get_Parameter(BuiltInParameter.WALL_BASE_OFFSET);
-                    	
-                    	Level BaseLevel = m_doc.GetElement(p.AsElementId()) as Level;
-                    	
-                    	p.Set(curBtmLevel.Id);
-                    	q.Set(q.AsDouble() + BaseLevel.Elevation - curBtmLevel.Elevation);
-
+						i=3;
 						break;
 					case (int)BuiltInCategory.OST_Doors:
-						
+						i=4;
 						break;
 					case (int)BuiltInCategory.OST_Windows:
-						
+						i=5;
 						break;
 					case (int)BuiltInCategory.OST_StairsRailing:
-						
+						i=6;
 						break;
 					case (int)BuiltInCategory.OST_Stairs:
-						
-						break;
-					case (int)BuiltInCategory.OST_StructuralColumns:
+						i=7;
 						break;
 					default:
 						
 						break;
 				}
+				
+				Parameter p = e1.get_Parameter(bipBase[i]);
+				Parameter q = e1.get_Parameter(bipBaseOffset1[i]);
+                    	
+            	Level BaseLevel = m_doc.GetElement(p.AsElementId()) as Level;
+            	
+            	p.Set(curBtmLevel.Id);
+            	q.Set(q.AsDouble() + BaseLevel.Elevation - curBtmLevel.Elevation);
+            	
+            	if(0==i){
+	 				Parameter r = e1.get_Parameter(bipBaseOffset2[i]);
+	            	r.Set(r.AsDouble() + BaseLevel.Elevation - curBtmLevel.Elevation);
+            	}
+
 //				try
 //				{
 //					for(int i=0; i < bipBase.Count;i++) {
