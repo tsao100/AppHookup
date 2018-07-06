@@ -41,6 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChangeObjRefLevel.cs" />
+    <Compile Include="ChangeObjRefLevel.Designer.cs">
+      <DependentUpon>ChangeObjRefLevel.cs</DependentUpon>
+    </Compile>
     <Compile Include="LevelIsolator.cs" />
     <Compile Include="LevelIsolator.Designer.cs">
       <DependentUpon>LevelIsolator.cs</DependentUpon>
