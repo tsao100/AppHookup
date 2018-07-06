@@ -1,0 +1,5 @@
+C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\BuildingTools\AddIn\BuildingTools.dll
+C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\BuildingTools\AddIn\BuildingTools.pdb
+C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\BuildingTools\Source\BuildingTools\obj\Debug\BuildingTools.csprojResolveAssemblyReference.cache
+C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\BuildingTools\Source\BuildingTools\obj\Debug\BuildingTools.dll
+C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\BuildingTools\Source\BuildingTools\obj\Debug\BuildingTools.pdb
