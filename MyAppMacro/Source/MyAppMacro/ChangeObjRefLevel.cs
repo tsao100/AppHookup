@@ -55,8 +55,7 @@ namespace MyAppMacro
 			Level curTopLevel = m_levels.ElementAt(cbTopLevel.SelectedIndex);
 			
 			ICollection<ElementId> selection = m_uidoc.Selection.GetElementIds();
-			List<ElementId> eIds= new List<ElementId>();
-			Parameter p;
+//			Parameter p;
 			
 			List<BuiltInParameter> bipBase = new List<BuiltInParameter>(){
 				BuiltInParameter.FAMILY_BASE_LEVEL_PARAM,
@@ -98,30 +97,72 @@ namespace MyAppMacro
 				BuiltInParameter.INVALID
 			};
 			
-			
 			foreach (ElementId eId in selection) {
 				Element e1 = m_doc.GetElement(eId);
-				try
-				{
-					for(int i=0; i < bipBase.Count;i++) {
-						p = e1.get_Parameter(bipBase[i]);
-						if (null != p)
-						{
-							Level p_Level = m_doc.GetElement(p.AsElementId())  as Level;
-							if(null != p_Level){
-								e1.get_Parameter(bipBase[i]).Set(curBtmLevel.Id);
+				switch ((int)e1.Category.Id.IntegerValue) {
+					case (int)BuiltInCategory.OST_StructuralFraming:
+						FamilyInstance fi = e1 as FamilyInstance;
+						switch (fi.StructuralType) {
+							case StructuralType.Beam:
+								break;
+							default:
 								
-							}
-						}					
-					}
+								break;
+						}
+						
+						break;
+					case (int)BuiltInCategory.OST_Floors:
+						
+						break;
+					case (int)BuiltInCategory.OST_Walls:
+						Parameter p = e1.get_Parameter(BuiltInParameter.WALL_BASE_CONSTRAINT);
+						Parameter q = e1.get_Parameter(BuiltInParameter.WALL_BASE_OFFSET);
+                    	
+                    	Level BaseLevel = m_doc.GetElement(p.AsElementId()) as Level;
+                    	
+                    	p.Set(curBtmLevel.Id);
+                    	q.Set(q.AsDouble() + BaseLevel.Elevation - curBtmLevel.Elevation);
+
+						break;
+					case (int)BuiltInCategory.OST_Doors:
+						
+						break;
+					case (int)BuiltInCategory.OST_Windows:
+						
+						break;
+					case (int)BuiltInCategory.OST_StairsRailing:
+						
+						break;
+					case (int)BuiltInCategory.OST_Stairs:
+						
+						break;
+					case (int)BuiltInCategory.OST_StructuralColumns:
+						break;
+					default:
+						
+						break;
 				}
-				catch (Exception ex)
-				{
-				     TaskDialog.Show("Exception", ex.ToString());
-				}
+//				try
+//				{
+//					for(int i=0; i < bipBase.Count;i++) {
+//						p = e1.get_Parameter(bipBase[i]);
+//						if (null != p)
+//						{
+//							Level p_Level = m_doc.GetElement(p.AsElementId())  as Level;
+//							if(null != p_Level){
+//								if(!e1.get_Parameter(bipBase[i]).IsReadOnly)
+//								e1.get_Parameter(bipBase[i]).Set(curBtmLevel.Id);
+//								
+//							}
+//						}					
+//					}
+//				}
+////				catch (Exception ex)
+//				catch (Exception)
+//				{
+//				     //TaskDialog.Show("Exception", ex.ToString());
+//				}
 			}
-			m_uidoc.ActiveView.HideElements(eIds);
-			m_uidoc.RefreshActiveView();
 
 			this.Close();	
 		}

@@ -213,7 +213,7 @@ namespace MyAppMacro
 			{
 				  t.Start();
 		            ChangeObjRefLevel corl = new ChangeObjRefLevel(doc, uidoc);
-		            corl.Show();
+		            corl.ShowDialog();
 			      t.Commit();
 			}
  			
