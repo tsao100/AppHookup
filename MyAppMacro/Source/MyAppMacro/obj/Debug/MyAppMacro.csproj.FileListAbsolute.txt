@@ -1,0 +1,7 @@
+C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\MyAppMacro\AddIn\MyAppMacro.dll
+C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\MyAppMacro\AddIn\MyAppMacro.pdb
+C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\MyAppMacro\Source\MyAppMacro\obj\Debug\MyAppMacro.dll
+C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\MyAppMacro\Source\MyAppMacro\obj\Debug\MyAppMacro.pdb
+C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\MyAppMacro\Source\MyAppMacro\obj\Debug\MyAppMacro.csprojResolveAssemblyReference.cache
+C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\MyAppMacro\Source\MyAppMacro\obj\Debug\MyAppMacro.LevelIsolator.resources
+C:\ProgramData\Autodesk\Revit\Macros\2018\Revit\AppHookup\MyAppMacro\Source\MyAppMacro\obj\Debug\MyAppMacro.csproj.GenerateResource.Cache
