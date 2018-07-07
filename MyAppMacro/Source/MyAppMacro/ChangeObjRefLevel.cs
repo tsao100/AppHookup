@@ -49,6 +49,40 @@ namespace MyAppMacro
 			cbBtmLevel.SelectedIndex=0;
 		}
 		
+		void DetachFromPlane(Element beam){
+              double elevOldSta = beam.get_Parameter(
+		        BuiltInParameter.STRUCTURAL_BEAM_END0_ELEVATION )
+		          .AsDouble();
+		 
+		      double elevOldEnd = beam.get_Parameter(
+		        BuiltInParameter.STRUCTURAL_BEAM_END1_ELEVATION )
+		          .AsDouble();
+		 
+		      double elevTmpSta = elevOldSta + 1.0;
+		      double elevTmpEnd = elevOldEnd + 1.0;
+		 
+		      // This will "detach from plane"...
+		 
+		      beam.get_Parameter(
+		        BuiltInParameter.STRUCTURAL_BEAM_END0_ELEVATION )
+		          .Set( elevTmpSta );
+		 
+		      beam.get_Parameter(
+		        BuiltInParameter.STRUCTURAL_BEAM_END1_ELEVATION )
+		          .Set( elevTmpEnd );
+		 
+		      // ...and this move back to the 
+		      // same original position
+		 
+		      beam.get_Parameter(
+		        BuiltInParameter.STRUCTURAL_BEAM_END0_ELEVATION )
+		          .Set( elevOldSta );
+		 
+		      beam.get_Parameter(
+		        BuiltInParameter.STRUCTURAL_BEAM_END1_ELEVATION )
+		          .Set( elevOldEnd );			
+		}
+		
 		void BtnApplyClick(object sender, EventArgs e)
 		{
 			Level curBtmLevel = m_levels.ElementAt(cbBtmLevel.SelectedIndex);
@@ -64,7 +98,11 @@ namespace MyAppMacro
 				BuiltInParameter.LEVEL_PARAM,
 				BuiltInParameter.WALL_BASE_CONSTRAINT,
 				BuiltInParameter.FAMILY_LEVEL_PARAM,
-				BuiltInParameter.STAIRS_BASE_LEVEL_PARAM
+				BuiltInParameter.STAIRS_BASE_LEVEL_PARAM,
+				BuiltInParameter.LEVEL_PARAM,
+				BuiltInParameter.FAMILY_LEVEL_PARAM,
+				BuiltInParameter.FAMILY_LEVEL_PARAM,
+				BuiltInParameter.ROOF_BASE_LEVEL_PARAM
 			};
 			
 			List<BuiltInParameter> bipTop = new List<BuiltInParameter>(){
@@ -74,7 +112,11 @@ namespace MyAppMacro
 				BuiltInParameter.INVALID,
 				BuiltInParameter.WALL_HEIGHT_TYPE,
 				BuiltInParameter.INVALID,
-				BuiltInParameter.STAIRS_TOP_LEVEL_PARAM
+				BuiltInParameter.STAIRS_TOP_LEVEL_PARAM,
+				BuiltInParameter.INVALID,
+				BuiltInParameter.INVALID,
+				BuiltInParameter.INVALID,
+				BuiltInParameter.INVALID
 			};
 
 			List<BuiltInParameter> bipBaseOffset1 = new List<BuiltInParameter>(){
@@ -84,7 +126,11 @@ namespace MyAppMacro
 				BuiltInParameter.FLOOR_HEIGHTABOVELEVEL_PARAM,
 				BuiltInParameter.WALL_BASE_OFFSET,
 				BuiltInParameter.INSTANCE_SILL_HEIGHT_PARAM,
-				BuiltInParameter.STAIRS_BASE_OFFSET
+				BuiltInParameter.STAIRS_BASE_OFFSET,
+				BuiltInParameter.CEILING_HEIGHTABOVELEVEL_PARAM,
+				BuiltInParameter.FLOOR_HEIGHTABOVELEVEL_PARAM,
+				BuiltInParameter.INSTANCE_FREE_HOST_OFFSET_PARAM,
+				BuiltInParameter.ROOF_LEVEL_OFFSET_PARAM
 			};
 			
 			List<BuiltInParameter> bipBaseOffset2 = new List<BuiltInParameter>(){
@@ -94,11 +140,15 @@ namespace MyAppMacro
 				BuiltInParameter.INVALID,
 				BuiltInParameter.WALL_TOP_OFFSET,
 				BuiltInParameter.INVALID,
-				BuiltInParameter.STAIRS_TOP_OFFSET
+				BuiltInParameter.STAIRS_TOP_OFFSET,
+				BuiltInParameter.INVALID,
+				BuiltInParameter.INVALID,
+				BuiltInParameter.INVALID,
+				BuiltInParameter.INVALID
 			};
 			
-			int i=0;
 			foreach (ElementId eId in selection) {
+				int i=0;
 				Element e1 = m_doc.GetElement(eId);
 				switch ((int)e1.Category.Id.IntegerValue) {
 					case (int)BuiltInCategory.OST_StructuralFraming:
@@ -106,7 +156,12 @@ namespace MyAppMacro
 						switch (fi.StructuralType) {
 							case StructuralType.Beam:
 								i=0;
-								e1.get_Parameter(bipBase[i]).Set(curBtmLevel.Id);
+								Parameter p=e1.get_Parameter(bipBase[i]);
+								if (p.IsReadOnly)
+								{
+									DetachFromPlane(e1);
+								}
+								p.Set(curBtmLevel.Id);
 								break;
 							default:
 								
@@ -128,7 +183,7 @@ namespace MyAppMacro
 					case (int)BuiltInCategory.OST_StructuralColumns:
 						i=2;
 						break;
-					case (int)BuiltInCategory.OST_Floors:
+					case (int)BuiltInCategory.OST_Floors: 
 						i=3;
 						break;
 					case (int)BuiltInCategory.OST_Walls:
@@ -140,6 +195,18 @@ namespace MyAppMacro
 						break;
 					case (int)BuiltInCategory.OST_Stairs:
 						i=6;
+						break;
+					case (int)BuiltInCategory.OST_Ceilings:
+						i=7;
+						break;
+					case (int)BuiltInCategory.OST_StructuralFoundation:
+						i=8;
+						break;
+					case (int)BuiltInCategory.OST_Site:
+						i=9;
+						break;
+					case (int)BuiltInCategory.OST_Roofs:
+						i=10;
 						break;
 					default:
 						

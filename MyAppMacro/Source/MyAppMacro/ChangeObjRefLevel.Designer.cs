@@ -44,24 +44,28 @@ namespace MyAppMacro
 			// cbBtmLevel
 			// 
 			this.cbBtmLevel.FormattingEnabled = true;
-			this.cbBtmLevel.Location = new System.Drawing.Point(12, 78);
+			this.cbBtmLevel.Location = new System.Drawing.Point(9, 62);
+			this.cbBtmLevel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.cbBtmLevel.Name = "cbBtmLevel";
-			this.cbBtmLevel.Size = new System.Drawing.Size(151, 23);
+			this.cbBtmLevel.Size = new System.Drawing.Size(114, 20);
 			this.cbBtmLevel.TabIndex = 0;
 			// 
 			// cbTopLevel
 			// 
 			this.cbTopLevel.FormattingEnabled = true;
-			this.cbTopLevel.Location = new System.Drawing.Point(12, 33);
+			this.cbTopLevel.Location = new System.Drawing.Point(9, 26);
+			this.cbTopLevel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.cbTopLevel.Name = "cbTopLevel";
-			this.cbTopLevel.Size = new System.Drawing.Size(151, 23);
+			this.cbTopLevel.Size = new System.Drawing.Size(114, 20);
 			this.cbTopLevel.TabIndex = 0;
+			this.cbTopLevel.Visible = false;
 			// 
 			// btnApply
 			// 
-			this.btnApply.Location = new System.Drawing.Point(78, 191);
+			this.btnApply.Location = new System.Drawing.Point(58, 153);
+			this.btnApply.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.btnApply.Name = "btnApply";
-			this.btnApply.Size = new System.Drawing.Size(135, 31);
+			this.btnApply.Size = new System.Drawing.Size(101, 25);
 			this.btnApply.TabIndex = 1;
 			this.btnApply.Text = "套用";
 			this.btnApply.UseCompatibleTextRendering = true;
@@ -70,12 +74,13 @@ namespace MyAppMacro
 			// 
 			// ChangeObjRefLevel
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(282, 253);
+			this.ClientSize = new System.Drawing.Size(212, 202);
 			this.Controls.Add(this.btnApply);
 			this.Controls.Add(this.cbTopLevel);
 			this.Controls.Add(this.cbBtmLevel);
+			this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.Name = "ChangeObjRefLevel";
 			this.Text = "ChangeObjRefLevel";
 			this.ResumeLayout(false);

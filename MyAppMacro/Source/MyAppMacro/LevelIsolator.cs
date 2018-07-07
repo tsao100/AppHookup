@@ -61,7 +61,8 @@ namespace MyAppMacro
 				BuiltInParameter.SCHEDULE_LEVEL_PARAM,
 				BuiltInParameter.WALL_BASE_CONSTRAINT,
 				BuiltInParameter.FAMILY_LEVEL_PARAM,
-				BuiltInParameter.STAIRS_BASE_LEVEL_PARAM
+				BuiltInParameter.STAIRS_BASE_LEVEL_PARAM,
+				BuiltInParameter.ROOF_BASE_LEVEL_PARAM
 			};
 			
 			List<BuiltInParameter> bip2 = new List<BuiltInParameter>(){
