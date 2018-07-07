@@ -59,42 +59,42 @@ namespace MyAppMacro
 			
 			List<BuiltInParameter> bipBase = new List<BuiltInParameter>(){
 				BuiltInParameter.INSTANCE_REFERENCE_LEVEL_PARAM,
+				BuiltInParameter.STAIRS_RAILING_BASE_LEVEL_PARAM,
 				BuiltInParameter.FAMILY_BASE_LEVEL_PARAM,
-				BuiltInParameter.SCHEDULE_LEVEL_PARAM,
+				BuiltInParameter.LEVEL_PARAM,
 				BuiltInParameter.WALL_BASE_CONSTRAINT,
 				BuiltInParameter.FAMILY_LEVEL_PARAM,
-				BuiltInParameter.STAIRS_BASE_LEVEL_PARAM,
-				BuiltInParameter.STAIRS_RAILING_BASE_LEVEL_PARAM
+				BuiltInParameter.STAIRS_BASE_LEVEL_PARAM
 			};
 			
 			List<BuiltInParameter> bipTop = new List<BuiltInParameter>(){
-				BuiltInParameter.FAMILY_TOP_LEVEL_PARAM,
 				BuiltInParameter.INVALID,
+				BuiltInParameter.INVALID,
+				BuiltInParameter.FAMILY_TOP_LEVEL_PARAM,
 				BuiltInParameter.INVALID,
 				BuiltInParameter.WALL_HEIGHT_TYPE,
 				BuiltInParameter.INVALID,
-				BuiltInParameter.STAIRS_TOP_LEVEL_PARAM,
-				BuiltInParameter.INVALID
+				BuiltInParameter.STAIRS_TOP_LEVEL_PARAM
 			};
 
 			List<BuiltInParameter> bipBaseOffset1 = new List<BuiltInParameter>(){
 				BuiltInParameter.STRUCTURAL_BEAM_END0_ELEVATION,
+				BuiltInParameter.STAIRS_RAILING_HEIGHT_OFFSET,
 				BuiltInParameter.FAMILY_BASE_LEVEL_OFFSET_PARAM,
 				BuiltInParameter.FLOOR_HEIGHTABOVELEVEL_PARAM,
 				BuiltInParameter.WALL_BASE_OFFSET,
 				BuiltInParameter.INSTANCE_SILL_HEIGHT_PARAM,
-				BuiltInParameter.STAIRS_BASE_OFFSET,
-				BuiltInParameter.STAIRS_RAILING_HEIGHT_OFFSET
+				BuiltInParameter.STAIRS_BASE_OFFSET
 			};
 			
 			List<BuiltInParameter> bipBaseOffset2 = new List<BuiltInParameter>(){
 				BuiltInParameter.STRUCTURAL_BEAM_END1_ELEVATION,
+				BuiltInParameter.INVALID,
 				BuiltInParameter.FAMILY_TOP_LEVEL_OFFSET_PARAM,
 				BuiltInParameter.INVALID,
 				BuiltInParameter.WALL_TOP_OFFSET,
-				BuiltInParameter.FAMILY_LEVEL_PARAM,
-				BuiltInParameter.STAIRS_TOP_OFFSET,
-				BuiltInParameter.INVALID
+				BuiltInParameter.INVALID,
+				BuiltInParameter.STAIRS_TOP_OFFSET
 			};
 			
 			int i=0;
@@ -106,6 +106,7 @@ namespace MyAppMacro
 						switch (fi.StructuralType) {
 							case StructuralType.Beam:
 								i=0;
+								e1.get_Parameter(bipBase[i]).Set(curBtmLevel.Id);
 								break;
 							default:
 								
@@ -113,44 +114,48 @@ namespace MyAppMacro
 						}
 						
 						break;
-					case (int)BuiltInCategory.OST_StructuralColumns:
+					case (int)BuiltInCategory.OST_StairsRailing:
 						i=1;
+						if(!(e1 as Railing).HasHost){
+							Parameter p = e1.get_Parameter(bipBase[i]);
+							Parameter q = e1.get_Parameter(bipBaseOffset1[i]);
+			                    	
+			            	Level BaseLevel = m_doc.GetElement(p.AsElementId()) as Level;
+			            	p.Set(curBtmLevel.Id);
+		            		q.Set(q.AsDouble() + BaseLevel.Elevation - curBtmLevel.Elevation);
+						}
 						break;
-					case (int)BuiltInCategory.OST_Floors:
+					case (int)BuiltInCategory.OST_StructuralColumns:
 						i=2;
 						break;
-					case (int)BuiltInCategory.OST_Walls:
+					case (int)BuiltInCategory.OST_Floors:
 						i=3;
 						break;
-					case (int)BuiltInCategory.OST_Doors:
+					case (int)BuiltInCategory.OST_Walls:
 						i=4;
 						break;
+					case (int)BuiltInCategory.OST_Doors:
 					case (int)BuiltInCategory.OST_Windows:
 						i=5;
 						break;
-					case (int)BuiltInCategory.OST_StairsRailing:
-						i=6;
-						break;
 					case (int)BuiltInCategory.OST_Stairs:
-						i=7;
+						i=6;
 						break;
 					default:
 						
 						break;
 				}
 				
-				Parameter p = e1.get_Parameter(bipBase[i]);
-				Parameter q = e1.get_Parameter(bipBaseOffset1[i]);
-                    	
-            	Level BaseLevel = m_doc.GetElement(p.AsElementId()) as Level;
             	
-            	p.Set(curBtmLevel.Id);
-            	q.Set(q.AsDouble() + BaseLevel.Elevation - curBtmLevel.Elevation);
-            	
-            	if(0==i){
-	 				Parameter r = e1.get_Parameter(bipBaseOffset2[i]);
-	            	r.Set(r.AsDouble() + BaseLevel.Elevation - curBtmLevel.Elevation);
+            	if(i>1){
+					Parameter p = e1.get_Parameter(bipBase[i]);
+					Parameter q = e1.get_Parameter(bipBaseOffset1[i]);
+	                    	
+	            	Level BaseLevel = m_doc.GetElement(p.AsElementId()) as Level;
+	            	p.Set(curBtmLevel.Id);
+            		q.Set(q.AsDouble() + BaseLevel.Elevation - curBtmLevel.Elevation);
             	}
+	            
 
 //				try
 //				{
