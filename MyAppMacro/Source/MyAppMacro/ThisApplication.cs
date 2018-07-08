@@ -205,7 +205,7 @@ namespace MyAppMacro
 			}
 		}
 		
-		public void ChangeObjRefLevel2()
+		public void ChangeObjRefLevel()
 		{
             Document doc = doc=ActiveUIDocument.Document; 
             UIDocument uidoc=ActiveUIDocument;
@@ -219,7 +219,7 @@ namespace MyAppMacro
  			
 
 		}
-		public void ChangeObjRefLevel()
+		public void ChangeObjRefLevel2()
 		{
 //			UIApplication uiapp = commandData.Application;
 //            UIDocument uidoc = uiapp.ActiveUIDocument;
