@@ -8,6 +8,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -742,6 +743,103 @@ List<FamilyInstance> familyInstances = query.Cast<FamilyInstance>().ToList<Famil
 			}
 
 		}
+		
+		public void newType(){
+			UIDocument uidoc = ActiveUIDocument;
+			Document doc = uidoc.Document;
+			const string _wall_type_name = "NewWallType";
+			WallType wallType = null;
+			using( Transaction t = new Transaction( doc ) )
+	      	{
+		        t.Start( "Transfer Wall Type" );
+		
+		        WallType newWallType = null;
+		
+		        //WallTypeSet wallTypes = doc.WallTypes; // 2013 
+		
+		        FilteredElementCollector wallTypes = new FilteredElementCollector( doc )
+		          .OfClass( typeof( WallType ) ); // 2014
+		        wallType = wallTypes.ElementAt(0) as WallType;
+		        foreach( WallType wt in wallTypes )
+		        {
+		          if( wt.Kind == wallType.Kind )
+		          {
+		            newWallType = wt.Duplicate( _wall_type_name )
+		              as WallType;
+		
+		            Debug.Print( string.Format(
+		              "New wall type '{0}' created.",
+		              _wall_type_name ) );
+		
+		            break;
+		          }
+	        	}
+		        t.Commit();
+			}
+		}
+		
+		public void MarkFrames()
+		{
+			UIDocument uidoc = ActiveUIDocument;
+			Document doc = uidoc.Document;
+			
+			ElementClassFilter f1 = new ElementClassFilter(typeof( FamilyInstance ));
+			StructuralMaterialTypeFilter f2 = new StructuralMaterialTypeFilter(StructuralMaterialType.Concrete);
+			ElementClassFilter f3 = new ElementClassFilter(typeof( Floor ));
+			ElementClassFilter f4 = new ElementClassFilter(typeof( Wall ));
+			LogicalAndFilter f5 = new LogicalAndFilter(f1, f2);
+			LogicalOrFilter f6 = new LogicalOrFilter(f3, f4);
+			LogicalOrFilter memberFilter = new LogicalOrFilter(f5, f6);
+
+			FilteredElementCollector collector = new FilteredElementCollector(doc);
+			collector.WherePasses(memberFilter);
+			List<Element> members = collector.ToList();
+			int SN=1;
+			using(Transaction tx = new Transaction(doc, "MarkFrames")){
+				tx.Start();
+				foreach (Element e in members) {
+			      		e.get_Parameter(BuiltInParameter.DOOR_NUMBER).Set("C"+SN.ToString("00"));
+			      		SN++;
+				}
+				tx.Commit();
+			}
+		}
+		
+		public void CreateNewTypes()
+		{
+			UIDocument uidoc = ActiveUIDocument;
+			Document doc = uidoc.Document;
+			
+			ElementClassFilter f1 = new ElementClassFilter(typeof( FamilyInstance ));
+			StructuralMaterialTypeFilter f2 = new StructuralMaterialTypeFilter(StructuralMaterialType.Concrete);
+			ElementClassFilter f3 = new ElementClassFilter(typeof( Floor ));
+			ElementClassFilter f4 = new ElementClassFilter(typeof( Wall ));
+			LogicalAndFilter f5 = new LogicalAndFilter(f1, f2);
+			LogicalOrFilter f6 = new LogicalOrFilter(f3, f4);
+			LogicalOrFilter memberFilter = new LogicalOrFilter(f5, f6);
+
+			FilteredElementCollector collector = new FilteredElementCollector(doc);
+			collector.WherePasses(memberFilter);
+			List<Element> members = collector.ToList();
+			using(Transaction tx = new Transaction(doc, "MarkFrames")){
+				tx.Start();
+				foreach (Element e in members) {
+			      		Debug.Print( string.Format(
+		              "Type '{0}-{1}' listed.",
+		              e.get_Parameter(BuiltInParameter.DOOR_NUMBER).AsString(),
+		              e.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM).AsValueString()) );
+					ElementId eTypeId = e.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM).AsElementId();
+					ElementType eType = doc.GetElement(eTypeId) as ElementType;
+					ElementType newEType = eType.Duplicate(string.Format(
+		              "{0}-{1}",
+		              e.get_Parameter(BuiltInParameter.DOOR_NUMBER).AsString(),
+		              e.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM).AsValueString()) ) as ElementType;
+					e.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM).Set(newEType.Id);
+				}
+				tx.Commit();
+			}
+		}
+		
 		
 		public void MarkUntagedFrame2()
 		{
