@@ -216,11 +216,12 @@ namespace MyAppMacro
             	
             	if(i>1){
 					Parameter p = e1.get_Parameter(bipBase[i]);
-					Parameter q = e1.get_Parameter(bipBaseOffset1[i]);
-	                    	
-	            	Level BaseLevel = m_doc.GetElement(p.AsElementId()) as Level;
-	            	p.Set(curBtmLevel.Id);
-            		q.Set(q.AsDouble() + BaseLevel.Elevation - curBtmLevel.Elevation);
+					if (null != p){
+						Parameter q = e1.get_Parameter(bipBaseOffset1[i]);
+		            	Level BaseLevel = m_doc.GetElement(p.AsElementId()) as Level;
+		            	p.Set(curBtmLevel.Id);
+	            		q.Set(q.AsDouble() + BaseLevel.Elevation - curBtmLevel.Elevation);
+					}
             	}
 	            
 
