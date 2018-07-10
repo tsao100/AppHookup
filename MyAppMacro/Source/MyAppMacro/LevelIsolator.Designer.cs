@@ -38,6 +38,7 @@ namespace MyAppMacro
 		{
 			this.cbLevel = new System.Windows.Forms.ComboBox();
 			this.btnApply = new System.Windows.Forms.Button();
+			this.btnShowAll = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// cbLevel
@@ -59,17 +60,30 @@ namespace MyAppMacro
 			this.btnApply.UseVisualStyleBackColor = true;
 			this.btnApply.Click += new System.EventHandler(this.BtnApplyClick);
 			// 
+			// btnShowAll
+			// 
+			this.btnShowAll.Location = new System.Drawing.Point(109, 165);
+			this.btnShowAll.Name = "btnShowAll";
+			this.btnShowAll.Size = new System.Drawing.Size(117, 29);
+			this.btnShowAll.TabIndex = 1;
+			this.btnShowAll.Text = "顯示全部";
+			this.btnShowAll.UseCompatibleTextRendering = true;
+			this.btnShowAll.UseVisualStyleBackColor = true;
+			this.btnShowAll.Click += new System.EventHandler(this.BtnShowAllClick);
+			// 
 			// LevelIsolator
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(282, 253);
+			this.Controls.Add(this.btnShowAll);
 			this.Controls.Add(this.btnApply);
 			this.Controls.Add(this.cbLevel);
 			this.Name = "LevelIsolator";
 			this.Text = "LevelIsolator";
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button btnShowAll;
 		private System.Windows.Forms.Button btnApply;
 		private System.Windows.Forms.ComboBox cbLevel;
 	}

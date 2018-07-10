@@ -113,6 +113,21 @@ namespace MyAppMacro
 
 			this.Close();
 		}
+		
+		void BtnShowAllClick(object sender, EventArgs e)
+		{
+			IEnumerable<Element> Allelem= JtElementExtensionMethods.SelectAllPhysicalElements(m_doc);
+			IEnumerator<Element> a = Allelem.GetEnumerator();
+			List<ElementId> eIds= new List<ElementId>();
+			while (a.MoveNext()) {
+				Element e1 = a.Current;
+				eIds.Add(e1.Id);
+			}
+			m_uidoc.ActiveView.UnhideElements(eIds);
+			m_uidoc.RefreshActiveView();
+			this.Close();
+			
+		}
 	}
 
 	public static class JtElementExtensionMethods
