@@ -1047,5 +1047,30 @@ List<FamilyInstance> familyInstances = query.Cast<FamilyInstance>().ToList<Famil
 			}
 			
 		}
+		public void CreateWallByLine()
+		{
+		    Document doc = this.ActiveUIDocument.Document;	
+		    UIDocument uidoc=ActiveUIDocument;
+					    
+			using( Transaction tx = new Transaction( doc ) )
+			{
+			
+				Level level = doc.GetElement(uidoc.ActiveView.LevelId) as Level;
+				Reference hasPickOne = uidoc.Selection.PickObject(ObjectType.Element, "選取線：");
+				Line mc = doc.GetElement(hasPickOne) as Line;
+				tx.Start( "Create Gable Wall" );
+				
+				//Wall wall = doc.Create.NewWall( // 2012
+				//  profile, wallType, level, true, normal );
+				
+				//Wall wall = Wall.Create( // 2013
+				//  doc, profile, wallType.Id, level.Id, true, normal );
+				
+				//Wall wall = Wall.Create(doc, Curve, WallTypeID, level.Id, true, NormalizationForm);
+				
+				
+				tx.Commit();
+			}			
+		}
 	}
 }
