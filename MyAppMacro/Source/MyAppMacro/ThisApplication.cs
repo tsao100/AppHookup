@@ -1053,30 +1053,100 @@ List<FamilyInstance> familyInstances = query.Cast<FamilyInstance>().ToList<Famil
 			}
 			
 		}
+		public ElementId ViewLevelId()
+		{
+			Document doc = ActiveUIDocument.Document;			
+			View active = doc.ActiveView;
+			ElementId levelId = null;
+			
+			Parameter level = active.get_Parameter(BuiltInParameter.PLAN_VIEW_LEVEL);
+			
+			FilteredElementCollector lvlCollector = new FilteredElementCollector(doc);
+			ICollection<Element> lvlCollection = lvlCollector.OfClass(typeof(Level)).ToElements();
+			
+			foreach (Element l in lvlCollection)
+			{
+				Level lvl = l as Level;				
+				if(lvl.Name == level.AsString())
+				{
+					levelId = lvl.Id;
+					//TaskDialog.Show("test", lvl.Name + "\n"  + lvl.Id.ToString());
+				}
+			}
+			
+			return levelId;
+		
+		}
+		
+		public ElementId HigherLevelId(ElementId BaseLevelId)
+		{
+			Document doc = ActiveUIDocument.Document;			
+			View active = doc.ActiveView;
+			ElementId levelId = null;
+			
+			Level BaseLevel = doc.GetElement(BaseLevelId) as Level;
+			
+			FilteredElementCollector lvlCollector = new FilteredElementCollector(doc);
+			ICollection<Element> lvlCollection = lvlCollector.OfClass(typeof(Level)).ToElements();
+			
+			foreach (Element l in lvlCollection)
+			{
+				Level lvl = l as Level;				
+				if(lvl.Elevation > BaseLevel.Elevation)
+				{
+					levelId = lvl.Id;
+					break;
+				}
+			}
+			
+			return levelId;
+		
+		}
+		
+		public void CreateFrameByCAD()
+		{
+		    Document doc = this.ActiveUIDocument.Document;	
+		    UIDocument uidoc=ActiveUIDocument;
+			FilteredElementCollector iiCollector = new FilteredElementCollector(doc);
+			ICollection<Element> iiCollection = iiCollector.OfClass(typeof(ImportInstance)).ToElements();
+			
+		}
+
 		public void CreateWallByLine()
 		{
 		    Document doc = this.ActiveUIDocument.Document;	
 		    UIDocument uidoc=ActiveUIDocument;
 					    
-			using( Transaction tx = new Transaction( doc ) )
-			{
-			
-				Level level = doc.GetElement(uidoc.ActiveView.LevelId) as Level;
-				Reference hasPickOne = uidoc.Selection.PickObject(ObjectType.Element, "選取線：");
-				Line mc = doc.GetElement(hasPickOne) as Line;
-				tx.Start( "Create Gable Wall" );
-				
-				//Wall wall = doc.Create.NewWall( // 2012
-				//  profile, wallType, level, true, normal );
-				
-				//Wall wall = Wall.Create( // 2013
-				//  doc, profile, wallType.Id, level.Id, true, normal );
-				
-				//Wall wall = Wall.Create(doc, Curve, WallTypeID, level.Id, true, NormalizationForm);
-				
-				
-				tx.Commit();
-			}			
+				Level level = doc.GetElement(ViewLevelId()) as Level;
+				try {
+					while (true) {
+						Reference hasPickOne = uidoc.Selection.PickObject(ObjectType.Element, "選取線：");
+						CurveElement ce = doc.GetElement(hasPickOne) as CurveElement;
+						Curve c = ce.GeometryCurve;
+						Curve d = c.CreateOffset(UnitUtils.Convert(100,DisplayUnitType.DUT_MILLIMETERS, DisplayUnitType.DUT_DECIMAL_FEET),new XYZ(0,0,1));
+						using( Transaction tx = new Transaction( doc ) )
+						{
+							tx.Start( "Create Gable Wall" );
+							
+							//Wall wall = doc.Create.NewWall( // 2012
+							//  profile, wallType, level, true, normal );
+							
+							//Wall wall = Wall.Create( // 2013
+							//  doc, profile, wallType.Id, level.Id, true, normal );
+							
+							Wall wall = Wall.Create(doc, d,  level.Id, true);
+							
+							wall.get_Parameter(BuiltInParameter.WALL_HEIGHT_TYPE).Set(HigherLevelId(level.Id)); //牆頂部約束
+							
+							tx.Commit();
+						}			
+						
+					}
+						
+				} catch (Exception) {
+					
+				//	throw;
+				}
 		}
 	}
 }
