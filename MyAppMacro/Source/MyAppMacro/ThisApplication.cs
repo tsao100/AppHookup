@@ -828,13 +828,19 @@ List<FamilyInstance> familyInstances = query.Cast<FamilyInstance>().ToList<Famil
 		              "Type '{0}-{1}' listed.",
 		              e.get_Parameter(BuiltInParameter.DOOR_NUMBER).AsString(),
 		              e.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM).AsValueString()) );
-					ElementId eTypeId = e.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM).AsElementId();
-					ElementType eType = doc.GetElement(eTypeId) as ElementType;
-					ElementType newEType = eType.Duplicate(string.Format(
-		              "{0}-{1}",
-		              e.get_Parameter(BuiltInParameter.DOOR_NUMBER).AsString(),
-		              e.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM).AsValueString()) ) as ElementType;
-					e.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM).Set(newEType.Id);
+					try {
+						ElementId eTypeId = e.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM).AsElementId();
+						ElementType eType = doc.GetElement(eTypeId) as ElementType;
+						ElementType newEType = eType.Duplicate(string.Format(
+			              "{0}-{1}",
+			              e.get_Parameter(BuiltInParameter.DOOR_NUMBER).AsString(),
+			              e.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM).AsValueString()) ) as ElementType;
+						e.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM).Set(newEType.Id);
+							
+					} catch (Exception) {
+						
+						//throw;
+					}
 				}
 				tx.Commit();
 			}
