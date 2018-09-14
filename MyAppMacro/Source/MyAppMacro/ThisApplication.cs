@@ -201,7 +201,7 @@ namespace MyAppMacro
 //			{
 //				  t.Start();
 		            LevelIsolator li = new LevelIsolator(doc, uidoc);
-		            li.ShowDialog();
+		          	li.ShowDialog();
 		            //li.Show();
 //			      t.Commit();
 //			}

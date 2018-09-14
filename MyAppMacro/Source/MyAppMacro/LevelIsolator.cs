@@ -183,11 +183,11 @@ namespace MyAppMacro
 		{
 			
 			ICollection<ElementId> selection = m_uidoc.Selection.GetElementIds();
-			if (selection.Count==0 ){
-				this .Hide();
-				m_uidoc.Selection.PickObjects(ObjectType.Element, "請窗選構件：");				
-				selection = m_uidoc.Selection.GetElementIds();
-			}
+//			if (selection.Count==0 ){
+//				this .Hide();
+//				m_uidoc.Selection.PickObjects(ObjectType.Element, "請窗選構件：");				
+//				selection = m_uidoc.Selection.GetElementIds();
+//			}
 			
 			Level curBtmLevel = m_levels.ElementAt(cbLevel.SelectedIndex);
 			
@@ -249,7 +249,7 @@ namespace MyAppMacro
 				BuiltInParameter.INVALID
 			};
 			this.Hide();
-			using (Transaction t = new Transaction(m_doc, "Hide element"))
+			using (Transaction t = new Transaction(m_doc, "Change Object Level"))
 			{
 				t.Start();
 
@@ -330,8 +330,8 @@ namespace MyAppMacro
 					}
             	}
 				
-				t.Commit();
 				}
+				t.Commit();
 				this.Show();
 	            
 
