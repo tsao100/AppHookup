@@ -197,13 +197,14 @@ namespace MyAppMacro
 		{
             Document doc = doc=ActiveUIDocument.Document; 
             UIDocument uidoc=ActiveUIDocument;
- 			using (Transaction t = new Transaction(doc, "Highlight element"))
-			{
-				  t.Start();
+// 			using (Transaction t = new Transaction(doc, "Highlight element"))
+//			{
+//				  t.Start();
 		            LevelIsolator li = new LevelIsolator(doc, uidoc);
-		            li.ShowDialog();
-			      t.Commit();
-			}
+		          	li.ShowDialog();
+		            //li.Show();
+//			      t.Commit();
+//			}
 		}
 		
 		public void ChangeObjRefLevel()

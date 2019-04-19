@@ -39,6 +39,7 @@ namespace MyAppMacro
 			this.cbLevel = new System.Windows.Forms.ComboBox();
 			this.btnApply = new System.Windows.Forms.Button();
 			this.btnShowAll = new System.Windows.Forms.Button();
+			this.btnApplyLevel = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// cbLevel
@@ -48,6 +49,7 @@ namespace MyAppMacro
 			this.cbLevel.Name = "cbLevel";
 			this.cbLevel.Size = new System.Drawing.Size(162, 23);
 			this.cbLevel.TabIndex = 0;
+			this.cbLevel.SelectedIndexChanged += new System.EventHandler(this.CbLevelSelectedIndexChanged);
 			// 
 			// btnApply
 			// 
@@ -55,7 +57,7 @@ namespace MyAppMacro
 			this.btnApply.Name = "btnApply";
 			this.btnApply.Size = new System.Drawing.Size(117, 29);
 			this.btnApply.TabIndex = 1;
-			this.btnApply.Text = "套用";
+			this.btnApply.Text = "只顯示";
 			this.btnApply.UseCompatibleTextRendering = true;
 			this.btnApply.UseVisualStyleBackColor = true;
 			this.btnApply.Click += new System.EventHandler(this.BtnApplyClick);
@@ -71,11 +73,23 @@ namespace MyAppMacro
 			this.btnShowAll.UseVisualStyleBackColor = true;
 			this.btnShowAll.Click += new System.EventHandler(this.BtnShowAllClick);
 			// 
+			// btnApplyLevel
+			// 
+			this.btnApplyLevel.Location = new System.Drawing.Point(33, 116);
+			this.btnApplyLevel.Name = "btnApplyLevel";
+			this.btnApplyLevel.Size = new System.Drawing.Size(193, 29);
+			this.btnApplyLevel.TabIndex = 1;
+			this.btnApplyLevel.Text = "改變構件的參考樓層至";
+			this.btnApplyLevel.UseCompatibleTextRendering = true;
+			this.btnApplyLevel.UseVisualStyleBackColor = true;
+			this.btnApplyLevel.Click += new System.EventHandler(this.BtnApplyLevelClick);
+			// 
 			// LevelIsolator
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(282, 253);
+			this.Controls.Add(this.btnApplyLevel);
 			this.Controls.Add(this.btnShowAll);
 			this.Controls.Add(this.btnApply);
 			this.Controls.Add(this.cbLevel);
@@ -83,8 +97,15 @@ namespace MyAppMacro
 			this.Text = "LevelIsolator";
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button btnApplyLevel;
 		private System.Windows.Forms.Button btnShowAll;
 		private System.Windows.Forms.Button btnApply;
 		private System.Windows.Forms.ComboBox cbLevel;
+		
+		void CbLevelSelectedIndexChanged(object sender, System.EventArgs e)
+		{
+			this.btnApply.Text = "只顯示"+ this.cbLevel.Text;
+			this.btnApplyLevel.Text = "改變構件的參考樓層至"+ this.cbLevel.Text;
+		}
 	}
 }
