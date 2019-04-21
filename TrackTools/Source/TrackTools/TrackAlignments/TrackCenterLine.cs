@@ -21,6 +21,8 @@ namespace TrackTools.TrackAlignments
 	/// </summary>
 	public class TrackCenterLine
 	{
+		int currentHIndex;
+		int currentVIndex;
 		string ALDPathName;
 		string VALDPathName;
 		AlignmentData[] ALDData;
@@ -60,6 +62,22 @@ namespace TrackTools.TrackAlignments
 			XYZ[0]=x+y;
 			XYZ[1]=y+z;
 			XYZ[2]=z+x;
+			
+			return XYZ;
+		}
+
+		public double[] Getxyz(double p, double w) //p: Chainage, w:Offset
+		{
+			for(int i=0; i < ALDData.Count();i++){
+				if (p>=ALDData[i].Chainage)
+				{
+					currentHIndex = i;
+					currentVIndex = i;
+					break;
+				}
+			}
+			
+			double[] XYZ=new Double[3];
 			
 			return XYZ;
 		}
