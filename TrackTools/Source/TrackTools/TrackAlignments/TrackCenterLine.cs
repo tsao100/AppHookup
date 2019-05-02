@@ -21,8 +21,8 @@ namespace TrackTools.TrackAlignments
 	/// </summary>
 	public class TrackCenterLine
 	{
-		int currentHIndex;
-		int currentVIndex;
+		int HIndex;
+		int VIndex;
 		string ALDPathName;
 		string VALDPathName;
 		AlignmentData[] ALDData;
@@ -68,18 +68,225 @@ namespace TrackTools.TrackAlignments
 
 		public double[] Getxyz(double p, double w) //p: Chainage, w:Offset
 		{
-			for(int i=0; i < ALDData.Count();i++){
-				if (p>=ALDData[i].Chainage)
-				{
-					currentHIndex = i;
-					currentVIndex = i;
-					break;
-				}
-			}
+			GetHIndex(p);
+			GetVIndex(p);
 			
 			double[] XYZ=new Double[3];
+			double[] XY=new Double[2];
+			double Z=0.0;
+			
+			switch (ALDData[HIndex].TSC.Substring(1,1)) {
+				case "T":
+					XY=Txy(p, w);
+					break;
+				case "C":
+					XY=Cxy(p, w);
+					break;
+				case "S":
+					switch (ALDData[HIndex-1].TSC.Substring(1,1) + ALDData[HIndex+1].TSC.Substring(1,1)) {
+						case "TC":
+							
+							break;
+						case "CC":
+							
+							break;
+						case "CT":
+							
+							break;
+						default:
+							
+							break;
+					}
+					
+					break;
+				default:
+					
+					break;
+			}
+			
+			if(VALDData[VIndex].Grade != VALDData[VIndex+1].Grade)
+			{
+				Z=SYVL(p);
+			}
+			else
+			{
+				Z=TVL(p);
+			}
+			
+			XYZ[0]=XY[0];
+			XYZ[1]=XY[1];
+			XYZ[2]=Z;
 			
 			return XYZ;
+		}
+		
+		private double SYVL(double p)
+		{
+			double x = p - VALDData[VIndex].Chainage;
+    		return VALDData[VIndex+1].PviElevation - VALDData[VIndex+1].LVC * 
+    			(VALDData[VIndex].Grade / 100) / 2 + (VALDData[VIndex].Grade / 100) * 
+    			x - ((VALDData[VIndex].Grade / 100) - (VALDData[VIndex+2].Grade / 100)) * x*x / (2 * VALDData[VIndex+1].LVC);
+
+		}
+		
+		private double TVL(double p)
+		{
+			return (p - VALDData[VIndex].Chainage) * VALDData[VIndex].Grade / 100 + VALDData[VIndex].Elevation;
+		}
+		
+		private double[] Cxy(double p, double w)
+		{
+			double[] XY=new Double[2];
+			double[] XY1=new Double[2];
+			double ALFAP = ALDData[HIndex].Azimuth - 90 * Math.Sign(ALDData[HIndex].Radius);
+			XY = getCenter();
+			
+			double L = p - ALDData[HIndex].Chainage;
+			double R1 = Math.Abs(ALDData[HIndex].Radius - w);
+			double SITA1 = L / ALDData[HIndex].Radius;
+			double ALFAPP = SITA1 + ALFAP;
+			XY1 = PtoRxy(R1, polar(ALFAPP));
+			XY[0] = XY1[0] + XY[0];
+			XY[1] = XY1[1] + XY[1];
+
+			return XY;
+		}
+		
+		private double[] getCenter()
+		{
+			double[] XY=new Double[2];
+			double ALFAP = ALDData[HIndex].Azimuth - 90 * Math.Sign(ALDData[HIndex].Radius);
+			XY=PtoRxy(- Math.Abs(ALDData[HIndex].Radius), polar(ALFAP));
+			XY[0] = ALDData[HIndex].Easting + XY[0];
+			XY[1] = ALDData[HIndex].Northing + XY[1];
+			return XY;
+		}
+		
+		private double[] Txy(double p, double w)
+		{
+			double[] XY=new Double[2];
+			double L = p - ALDData[HIndex].Chainage;
+			double R = rtopr(L, w);
+			double angle = ALDData[HIndex].Azimuth + rtopa(L, w);
+			double[] X1 = PtoRxy(R, polar(angle));
+				
+			XY[0] = ALDData[HIndex].Easting + X1[0];
+			XY[1] = ALDData[HIndex].Northing + X1[1];
+
+			return XY;
+		}
+		
+		private double polar(double Azimuth)
+		{
+			return Normalize(Math.PI*0.25-Azimuth);
+		}
+		
+		private double Normalize(double angle) //Make Angle value between 0~2pi
+		{
+			double temp = angle;
+			while (temp < 0)
+				temp+=Math.PI*2.0;
+			return temp;
+		}
+
+		
+		private double[] PtoRxy(double R, double theda)
+		{
+			double[] XY=new Double[2];
+			XY[0] = R * Math.Cos(theda);
+			XY[1] = R * Math.Sin(theda);
+			return XY;
+		}
+		
+		private double rtopr(double x, double y)
+		{
+			return Math.Sqrt(x*x+y*y);
+		}
+		
+		private double rtopa(double x, double y)
+		{
+			if (x == 0)
+			{
+				if (y > 0)
+    				return Math.PI*0.25; 
+    			else
+    				return Math.PI*0.75;    
+			}
+			else
+			{
+				if (x > 0) 
+        			return Math.Atan(y / x);
+				else
+	        		return Math.Atan(y / x) + Math.PI;
+			}			
+		}
+		
+		public int GetHIndex(double SearchKey)  //Apply Binary Search Algorithm, return -1 if failed
+		{
+            int left = 0 ; 
+            int right = ALDData.Count()-2;
+             if ( SearchKey == ALDData[ ALDData.Count()-1].Chainage)
+            {
+            	HIndex = ALDData.Count()-2;
+                return ALDData.Count()-2;
+            }
+           while (left <= right)
+            {
+                int mid = (left + right) / 2;//取中間位子當基準
+                if ((ALDData[mid].Chainage-SearchKey)<=0 && (ALDData[mid+1].Chainage-SearchKey)>0)
+                {
+                	HIndex = mid;
+                    return mid;//找到的index值
+                }
+                else 
+                {
+                    if (ALDData[mid].Chainage < SearchKey)//在右邊的數列
+                    {
+                        left = mid + 1;
+                    }
+                    else//在左邊的數列
+                    {
+                        right = mid - 1;
+                    }
+                }
+
+            }
+            return -1;//找不到時
+		}
+
+		public int GetVIndex(double SearchKey)  //Apply Binary Search Algorithm, return -1 if failed
+		{
+            int left = 0 ; 
+            int right = VALDData.Count()-2;
+            if ( SearchKey == VALDData[ VALDData.Count()-1].Chainage)
+            {
+            	VIndex = VALDData.Count()-2;
+                return VIndex;
+            }
+            while (left <= right)
+            {
+                int mid = (left + right) / 2;//取中間位子當基準
+                if ((VALDData[mid].Chainage-SearchKey)<=0 && (VALDData[mid+1].Chainage-SearchKey)>0)
+                {
+                	if(VALDData[mid].Grade != VALDData[mid+1].Grade && (mid % 3) == 2)
+                		mid--;
+                	VIndex = mid;
+                    return mid;//找到的index值
+                }
+                else 
+                {
+                    if (VALDData[mid].Chainage < SearchKey)//在右邊的數列
+                    {
+                        left = mid + 1;
+                    }
+                    else//在左邊的數列
+                    {
+                        right = mid - 1;
+                    }
+                }
+
+            }
+            return -1;//找不到時
 		}
 		
 		

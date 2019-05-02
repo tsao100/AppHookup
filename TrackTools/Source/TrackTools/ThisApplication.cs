@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Created by SharpDevelop.
  * User: SY.design
  * Date: 2019/3/8
@@ -52,8 +52,8 @@ namespace TrackTools
 			TrackCenterLine tcl1 = new TrackCenterLine("ALDName1");
 			TrackCenterLine tcl2 = new TrackCenterLine("ALDName2");
 			TrackCenterLine tcl3 = new TrackCenterLine("ALDName3");
-			double[] a=tcl1.Txyz(1,2,3);
-			TaskDialog.Show("GetXYZ",string.Format("X={0:f1}, Y={1:f2}, Z={2:f3}.", a[0],a[1],a[2]));
+			double[] a=tcl1.Getxyz(500, 0);
+			TaskDialog.Show("GetXYZ",string.Format("X={0:f5}, Y={1:f5}, Z={2:f5}.", a[0],a[1],a[2]));
 			
 //			Transaction transaction = new Transaction( uidoc.Document);
 //     		transaction.Start( "Draw Line Patterns or Weights" );	
