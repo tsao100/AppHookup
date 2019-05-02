@@ -85,7 +85,7 @@ namespace TrackTools.TrackAlignments
 				case "S":
 					switch (ALDData[HIndex-1].TSC.Substring(1,1) + ALDData[HIndex+1].TSC.Substring(1,1)) {
 						case "TC":
-							
+							XY = Sxy(p, w);
 							break;
 						case "CC":
 							
@@ -119,6 +119,90 @@ namespace TrackTools.TrackAlignments
 			
 			return XYZ;
 		}
+		
+		private double[] Sxy(double Psta, double w)
+		{
+			double[] XY=new Double[2];
+			double XS = ALDData[HIndex].Easting;
+			double YS = ALDData[HIndex].Northing;
+			double Asta = ALDData[HIndex].Chainage;
+			double R = ALDData[HIndex+1].Radius;
+			double LS = ALDData[HIndex].Length;
+			double angle = ALDData[HIndex].Azimuth;
+			double SITA = 0;
+			double L = Psta - Asta;
+			
+			string TRANSITIONTYPE = ALDData[HIndex].CurveType;
+			switch (TRANSITIONTYPE) {
+				case "SPIRAL":
+					double a = Math.Sqrt(Math.Abs(R) * LS) * Math.Sign(R);
+					SITA = Math.Pow(L / a, 2) / 2 * Math.Sign(a);
+					XY[0] = L * (1 -  Math.Pow(SITA, 2) / 10 +  Math.Pow(SITA, 4) / 216 -  Math.Pow(SITA, 6) / 9360);
+					XY[1] = L * SITA * (1 / 3 -  Math.Pow(SITA, 2) / 42 +  Math.Pow(SITA, 4) / 1320);
+					break;
+				default:
+					
+					break;
+			}
+			
+			double X1 = XY[0] - w * Math.Sin(SITA);
+			double Y1 = XY[1] + w * Math.Cos(SITA);
+			double R1 = rtopr(X1, Y1);
+			double S1 = rtopa(X1, Y1);
+			double[] XY2 = PtoRxy(R1, polar(S1 + angle));
+			XY[0] = XS + XY2[0];
+			XY[1] = YS + XY2[1];
+			
+			return XY;	
+		}
+		
+//Function sx(XS, YS, Asta, Psta, R, LS, w, angle, TRANSITIONTYPE)
+//    L = Psta - Asta
+//Select Case (Trim(TRANSITIONTYPE))
+//Case "SPIRAL"
+//    a = Sqr(Abs(R) * LS) * R / Abs(R)
+//    SITA = (L / a) ^ 2 / 2 * a / Abs(a)
+//    x = L * (1 - SITA ^ 2 / 10 + SITA ^ 4 / 216 - SITA ^ 6 / 9360)
+//    y = L * SITA * (1 / 3 - SITA ^ 2 / 42 + SITA ^ 4 / 1320)
+//Case "HALFSINE"
+//    b = 1 / (2 * R)
+//    la = WorksheetFunction.Pi() / LS
+//    Ba = la * L
+//    x = (L) - b ^ 2 * (2 * Ba ^ 3 - 12 * Sin(Ba) + 12 * Ba * Cos(Ba) - 3 * Cos(Ba) * Sin(Ba) + 3 * Ba) / 12 / la ^ 3
+//    y = b * ((L) ^ 2 + 2 * (Cos(Ba) - 1) / la ^ 2) / 2 - b ^ 3 * (3 * Ba ^ 4 + 36 * Ba ^ 2 * Cos(Ba) - 60 * Cos(Ba) - 72 * Ba * Sin(Ba) - 18 * Ba * Cos(Ba) * Sin(Ba) + 9 * Ba ^ 2 - 9 * (Cos(Ba)) ^ 2 - 4 * (Cos(Ba)) ^ 3 + 73) / 72 / la ^ 4
+//    SITA = 1 / (2 * R) * (L - LS / WorksheetFunction.Pi() * Sin(L / LS * WorksheetFunction.Pi()))
+//Case "PARABOLA"
+//    x = L - L ^ 5 / (40 * (R * LS) ^ 2)
+//    XB = LS - LS ^ 3 / (40 * (R) ^ 2)
+//    y = x ^ 3 / (6 * R * XB)
+//    SITA = WorksheetFunction.Atan2((2 * Abs(R) * XB), x ^ 2) * R / Abs(R)
+//    
+//Case "CUBICJPN"  'PARABOLICbole Japan
+//    BigX = BIGFXJPN(LS, R)
+//    x = FXJPN(BigX, L, R)
+//    y = x ^ 3 / (6 * R * BigX)
+//    SITA = WorksheetFunction.Atan2(1, x ^ 2 / (2 * R * BigX))
+//
+//Case "CUBICECI"  'PARABOLICbole CECI
+//    AbsR = Abs(R)
+//    AA = BIGFACECI(LS, AbsR)
+//    x = BIGFXCECI(L, AbsR)
+//    y = x ^ 3 / (6 * AA) * R / Abs(R)
+//    SITA = BIGFPCECI(L, Abs(R)) * R / Abs(R)
+//    
+//Case Else
+//MsgBox "Wrong input data"
+//
+//End Select
+//    X1 = x - w * Sin(SITA)
+//    Y1 = y + w * Cos(SITA)
+//    R1 = rtopr(X1, Y1)
+//    S1 = rtopa(X1, Y1)
+//    X2 = PTORX(R1, polar(S1 + angle))
+//    sx = XS + X2
+//
+//End Function
+
 		
 		private double SYVL(double p)
 		{
