@@ -1,6 +1,6 @@
 ﻿/*
  * 由SharpDevelop创建。
- * 用户： SY.design
+ * 用户：  Jack Tsao
  * 日期: 2019/4/16
  * 时间: 下午 03:56
  * 
@@ -10,6 +10,8 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
+//using System.Threading;
+//using System.Globalization;
 
 namespace TrackTools.Options
 {
@@ -23,11 +25,15 @@ namespace TrackTools.Options
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
+			//Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
+			
 			InitializeComponent();
 			
 			GetAllALDFileName(comboBox1, label1, "ALDName1");
 			GetAllALDFileName(comboBox2, label2, "ALDName2");
 			GetAllALDFileName(comboBox3, label3, "ALDName3");
+			
+			textBox1.Text = Interaction.GetSetting("AlignmentTools","AppData","OffsetLimit","45.00000");
 		}
 		
 		public void GetAllALDFileName(ComboBox obj, Label lbl, string AldNameNo)
@@ -63,6 +69,7 @@ namespace TrackTools.Options
 			Interaction.SaveSetting("AlignmentTools","AppData","AldName1",comboBox1.SelectedItem.ToString());
 			Interaction.SaveSetting("AlignmentTools","AppData","AldName2",comboBox2.SelectedItem.ToString());
 			Interaction.SaveSetting("AlignmentTools","AppData","AldName3",comboBox3.SelectedItem.ToString());
+			Interaction.SaveSetting("AlignmentTools","AppData","OffsetLimit",textBox1.Text);
 		}
 		
 		void ComboBox1SelectedIndexChanged(object sender, EventArgs e)

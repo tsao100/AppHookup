@@ -42,6 +42,7 @@
     <Reference Include="..\..\..\..\..\RevitAPIUI.dll">
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel" />
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -53,6 +54,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CreateTrack\CrearteTrackForm.cs" />
+    <Compile Include="CreateTrack\CrearteTrackForm.Designer.cs">
+      <DependentUpon>CrearteTrackForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CreateTrack\CreateTrack.cs" />
+    <Compile Include="CreateTrack\Request.cs" />
+    <Compile Include="CreateTrack\RequestHandler.cs" />
     <Compile Include="Ini.cs" />
     <Compile Include="Options\Options.cs" />
     <Compile Include="Options\Options.Designer.cs">
@@ -67,14 +75,19 @@
     <Compile Include="TrackAlignments\TrackCenterLine.cs" />
     <Compile Include="Track\RunningRails.cs" />
     <Compile Include="Track\TrackSlab.cs" />
+    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\Track" />
     <Folder Include="TrackAlignments" />
     <Folder Include="Track" />
     <Folder Include="Options" />
+    <Folder Include="CreateTrack" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CreateTrack\CrearteTrackForm.resx">
+      <DependentUpon>CrearteTrackForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Options\Options.resx">
       <DependentUpon>Options.cs</DependentUpon>
     </EmbeddedResource>
